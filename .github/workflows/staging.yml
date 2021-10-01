@@ -1,0 +1,36 @@
+name: OnComment
+on:
+  issue_comment:
+    types: [created, edited]
+#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
+jobs:
+  build:
+    name: 'Merge'
+    if: ${{ github.event.comment.body == '/staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          set -xe
+          git checkout -b staging_candidate
+          new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
+          branches=`gh pr list -l staging | cut -d $'\t' -f 3 | tr '\n' ' '`
+          candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | tr '\n' ' '`
+          set +e
+          merge_successful=`git merge --no-edit $branches $candite_branches $new_branch`
+          set -e
+          if [ -n "${merge_successful}" ];
+          then
+            echo '{"labels":["staging candidate"]}' | gh api ${{ github.event.issue.url }}/labels --input -
+            gh api ${{ github.event.comment.reactions.url }} -f 'content=rocket'
+            git push -f --set-upstream origin staging_candidate
+          else
+            gh api ${{ github.event.comment.reactions.url }} -f 'content=-1'
+          fi
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
