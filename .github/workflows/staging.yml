@@ -2,7 +2,6 @@ name: OnComment
 on:
   issue_comment:
     types: [created, edited]
-#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
 jobs:
   build:
     name: 'Merge'
@@ -10,10 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
       - run: |
           set -xe
-          git checkout -b staging_candidate
           new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
+          status_check=`gh api ${{ github.event.issue.repository_url }}/commits/$new_branch/status --jq '.state'`
+          if [ "$status_check" != "success" ]; then
+            gh api ${{ github.event.comment.reactions.url }} -f 'content=confused'
+            exit 1
+          fi
+          git pull
+          git checkout -b staging_candidate
           branches=`gh pr list -l staging | cut -d $'\t' -f 3 | tr '\n' ' '`
           candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | tr '\n' ' '`
           set +e
