@@ -4,7 +4,7 @@ on:
 jobs:
   build:
     name: 'CI'
-#    if: ${{ github.event.comment.body == '/staging' }}
+    if: ${{ contains(github.event.branches.*.name, 'staging_candidate' }}
     runs-on: ubuntu-latest
     steps:
 #      - uses: actions/checkout@v2
@@ -12,4 +12,4 @@ jobs:
 #          fetch-depth: 100
 #          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
       - run: |
-          echo "Status #${{ toJson(github) }}"
+          echo "Status #${{ toJson(github.event) }} #${{ toJson(github) }}"
