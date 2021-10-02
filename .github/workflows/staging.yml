@@ -18,12 +18,12 @@ jobs:
             gh api ${{ github.event.comment.reactions.url }} -f 'content=confused'
             exit 1
           fi
-          git pull
+          branches=`gh pr list -l staging | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
+          candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
+          git fetch
           git checkout -b staging_candidate
-          branches=`gh pr list -l staging | cut -d $'\t' -f 3 | tr '\n' ' '`
-          candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | tr '\n' ' '`
           set +e
-          merge_successful=`git merge --no-edit $branches $candite_branches $new_branch`
+          merge_successful=`git merge --no-edit $branches $candite_branches origin/$new_branch`
           set -e
           if [ -n "${merge_successful}" ];
           then
