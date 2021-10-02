@@ -1,0 +1,15 @@
+name: OnCI
+on:
+  status
+jobs:
+  build:
+    name: 'CI'
+#    if: ${{ github.event.comment.body == '/staging' }}
+    runs-on: ubuntu-latest
+    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 100
+#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
+      - run: |
+          echo "Status #${{ toJson(github) }}"
