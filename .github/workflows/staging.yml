@@ -22,7 +22,8 @@ jobs:
           fi
           branches=`gh pr list -l staging | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
           candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
-          git fetch
+          git config --global user.email "staging@indeedflex.com"
+          git config --global user.name "Staging Candidate Action"
           git checkout -b staging_candidate
           set +e
           merge_successful=`git merge --no-edit $branches $candite_branches origin/$new_branch`
@@ -38,7 +39,7 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
