@@ -4,7 +4,7 @@ on:
 jobs:
   build:
     name: 'CI'
-    if: ${{ contains(github.event.branches.*.name, 'staging_candidate' }}
+    if: ${{ contains(github.event.branches.*.name, 'staging_candidate') }}
     runs-on: ubuntu-latest
     steps:
 #      - uses: actions/checkout@v2
