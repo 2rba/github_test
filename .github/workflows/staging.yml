@@ -22,6 +22,7 @@ jobs:
           fi
           branches=`gh pr list -l staging | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
           candite_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
+          git fetch
           git config --global user.email "staging@indeedflex.com"
           git config --global user.name "Staging Candidate Action"
           git checkout -b staging_candidate
