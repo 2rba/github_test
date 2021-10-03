@@ -19,7 +19,7 @@ jobs:
             do
               echo "do something with $url $login";
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
-              gh api $url/comments -f 'body=ccc'
+              gh api $url/comments -f 'body=@$login CI failed'
             done
           fi
         env:
