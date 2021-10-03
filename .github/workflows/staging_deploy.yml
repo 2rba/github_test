@@ -15,12 +15,8 @@ jobs:
       - run: |
           set -x
           if [ "${{github.event.state}}" == "success" ]; then
-            gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@sh' | while read -r input
+            gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@tsv' | while IFS=$'\t' read -r url login
             do
-              echo "do something with $input";
-              args=(input)
-              url=input[1]
-              echo '{"labels":["Staging"]}' | gh api $url/labels --input -
+              echo "do something with $url $login";
             done
-          else
           fi
