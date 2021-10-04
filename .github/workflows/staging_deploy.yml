@@ -7,9 +7,7 @@ jobs:
     if: ${{ contains(github.event.branches.*.name, 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 100
+      - uses: actions/checkout@v2
 #          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
 #          echo "Status #${{ toJson(github) }}"
       - run: |
@@ -21,12 +19,13 @@ jobs:
               echo "do something with $url $login";
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
               gh api -X DELETE $url/labels/staging\ candidate
+              git push -f origin origin/staging_candidate:staging
             done
           else
            echo "$prs" | while IFS=$'\t' read -r url login
             do
               echo "do something with $url $login";
-              gh api $url/comments -f "body=@$login stagin CI build failed"
+              gh api $url/comments -f "body=@$login staging CI build failed"
             done
           fi
         env:
