@@ -2,7 +2,7 @@ name: 'Staging deploy'
 on:
   status
 jobs:
-  build:
+  deploy:
     name: 'Staging deploy'
     if: ${{ contains(github.event.branches.*.name, 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
