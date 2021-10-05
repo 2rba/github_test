@@ -1,17 +1,16 @@
-name: OnComment
+name: 'Staging candidate build'
 on:
   issue_comment:
     types: [created]
 jobs:
   build:
-    name: 'Merge'
+    name: 'Staging candidate build'
     if: ${{ github.event.comment.body == '/staging' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 100
-#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
       - run: |
           set -xe
           new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
@@ -40,7 +39,3 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

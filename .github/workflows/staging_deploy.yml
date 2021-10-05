@@ -1,15 +1,13 @@
-name: OnCI
+name: 'Staging deploy'
 on:
   status
 jobs:
   build:
-    name: 'CI'
+    name: 'Staging deploy'
     if: ${{ contains(github.event.branches.*.name, 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#          echo "Comment on #${{ github.event.issue.pull_request.url }} PR #${{ toJson(github) }}"
-#          echo "Status #${{ toJson(github) }}"
       - run: |
           set -x
           prs=`gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@tsv'`
@@ -20,7 +18,6 @@ jobs:
           if [ "${{github.event.state}}" == "success" ]; then
            echo "$prs" | while IFS=$'\t' read -r url login
             do
-              echo "do something with $url $login";
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
               gh api -X DELETE $url/labels/staging\ candidate
               git remote set-branches origin staging_candidate
@@ -31,7 +28,6 @@ jobs:
           else
            echo "$prs" | while IFS=$'\t' read -r url login
             do
-              echo "do something with $url $login";
               gh api $url/comments -f "body=@$login stagin CI build failed"
             done
           fi
