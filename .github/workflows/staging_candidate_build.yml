@@ -13,8 +13,6 @@ jobs:
           fetch-depth: 100
       - run: |
           set -xe
-          gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
-          gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
           new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
           status_check=`gh api ${{ github.event.issue.repository_url }}/commits/$new_branch/status --jq '.state'`
           if [ "$status_check" != "success" ]; then
@@ -35,6 +33,8 @@ jobs:
           if [ $merge_staging_branches -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # <-- error, Staging\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
             exit 1
           fi
           set +e
@@ -44,6 +44,8 @@ jobs:
           if [ $merge_staging_candidate_branches -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'staging candidate' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # Staging\\\ngit merge master $candidate_branches # <-- error, staging candidates\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
             exit 1
           fi
           set +e
@@ -53,6 +55,8 @@ jobs:
           if [ $merge_current_branch -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge the PR\\\n\`\`\`\\\ngit checkout master\\\ngit merge $branches # Staging\\\ngit merge $candidate_branches # staging candidates\\\ngit merge $new_branch # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
+            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
             exit 1
           fi
 
