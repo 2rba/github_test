@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     name: 'Staging candidate build'
-    if: ${{ github.event.comment.body == '/staging' }}
+    if: ${{ startsWith(github.event.comment.body, '/staging') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
