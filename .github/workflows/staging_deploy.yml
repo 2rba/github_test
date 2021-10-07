@@ -20,11 +20,12 @@ jobs:
             do
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
               gh api -X DELETE $url/labels/staging\ candidate
-              git remote set-branches origin staging_candidate
-              git fetch
-              git checkout staging_candidate
-              git push -f origin origin/staging_candidate:staging1
             done
+
+           git remote set-branches origin staging_candidate
+           git fetch
+           git checkout staging_candidate
+           git push -f origin origin/staging_candidate:staging1
           else
            echo "$prs" | while IFS=$'\t' read -r url login
             do
