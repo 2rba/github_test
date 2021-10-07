@@ -12,7 +12,6 @@ jobs:
         with:
           fetch-depth: 100
       - run: |
-#          echo "${{ toJson(github) }}"
           set -xe
           gh api -X DELETE ${{ github.event.issue_url }}/labels/staging\ candidate
           gh api -X DELETE ${{ github.event.issue_url }}/labels/Staging
