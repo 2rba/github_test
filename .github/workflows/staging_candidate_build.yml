@@ -27,25 +27,28 @@ jobs:
           git config --global user.name "Staging Candidate Action"
           git checkout -b staging_candidate
           set +e
-          merge_staging_branches=`git merge --no-edit master $branches`
+          `git merge --no-edit master $branches`
+          merge_staging_branches=$?
           set -e
-          if [ $? -ne 0 ];
+          if [ $merge_staging_branches -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # <-- error, Staging\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             exit 1
           fi
           set +e
-          merge_staging_candidate_branches=`git merge --no-edit master $candidate_branches`
+          `git merge --no-edit master $candidate_branches`
+          merge_staging_candidate_branches=$?
           set -e
-          if [ $? -ne 0 ];
+          if [ $merge_staging_candidate_branches -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'staging candidate' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # Staging\\\ngit merge master $candidate_branches # <-- error, staging candidates\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             exit 1
           fi
           set +e
-          merge_current_branch=`git merge --no-edit origin/$new_branch`
+          `git merge --no-edit origin/$new_branch`
+          merge_current_branch=$?
           set -e
-          if [ $? -ne 0 ];
+          if [ $merge_current_branch -ne 0 ];
           then
             printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge the PR\\\n\`\`\`\\\ngit checkout master\\\ngit merge $branches # Staging\\\ngit merge $candidate_branches # staging candidates\\\ngit merge $new_branch # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             exit 1
