@@ -12,10 +12,9 @@ jobs:
         with:
           fetch-depth: 100
       - run: |
-          set -x
+          set -xe
           gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
           gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
-          set -xe
           new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
           status_check=`gh api ${{ github.event.issue.repository_url }}/commits/$new_branch/status --jq '.state'`
           if [ "$status_check" != "success" ]; then
