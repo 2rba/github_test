@@ -17,7 +17,7 @@ jobs:
           status_check=`gh api ${{ github.event.issue.repository_url }}/commits/$new_branch/status --jq '.state'`
           if [ "$status_check" != "success" ]; then
             gh api ${{ github.event.comment.reactions.url }} -f 'content=confused'
-            gh api ${{ github.event.issue.pull_request.url }}/comments -f "body=@${{ github.event.issue.user.login }} Please make sure CI is greeen"
+            gh api ${{ github.event.issue.comments_url }} -f "body=@${{ github.event.issue.user.login }} Please make sure CI is greeen"
             exit 1
           fi
           branches=`gh pr list -l staging | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
