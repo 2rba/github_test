@@ -28,7 +28,7 @@ jobs:
           else
            echo "$prs" | while IFS=$'\t' read -r url login
             do
-              gh api $url/comments -f "body=@$login stagin CI build failed"
+              gh api $url/comments -f "body=@$login staging_candidate branch failed CI"
             done
           fi
         env:
