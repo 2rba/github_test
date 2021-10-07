@@ -27,7 +27,7 @@ jobs:
           git config --global user.name "Staging Candidate Action"
           git checkout -b staging_candidate
           set +e
-          `git merge --no-edit master $branches`
+          git merge --no-edit master $branches
           merge_staging_branches=$?
           set -e
           if [ $merge_staging_branches -ne 0 ];
@@ -36,7 +36,7 @@ jobs:
             exit 1
           fi
           set +e
-          `git merge --no-edit master $candidate_branches`
+          git merge --no-edit master $candidate_branches
           merge_staging_candidate_branches=$?
           set -e
           if [ $merge_staging_candidate_branches -ne 0 ];
@@ -45,7 +45,7 @@ jobs:
             exit 1
           fi
           set +e
-          `git merge --no-edit origin/$new_branch`
+          git merge --no-edit origin/$new_branch
           merge_current_branch=$?
           set -e
           if [ $merge_current_branch -ne 0 ];
