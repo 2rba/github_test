@@ -12,6 +12,7 @@ jobs:
         with:
           fetch-depth: 100
       - run: |
+          echo "${{ toJson(github) }}"
           set -xe
           new_branch=`gh api ${{ github.event.issue.pull_request.url }} --jq '.head.ref'`
           status_check=`gh api ${{ github.event.issue.repository_url }}/commits/$new_branch/status --jq '.state'`
