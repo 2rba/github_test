@@ -1,6 +1,8 @@
 name: 'Staging deploy'
 on:
-  status
+  status:
+    branches:
+      - staging_candidate
 jobs:
   deploy:
     name: 'Staging deploy'
