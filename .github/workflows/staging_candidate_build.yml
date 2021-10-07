@@ -32,7 +32,7 @@ jobs:
           set -e
           if [ -z "${merge_staging_branches}" ];
           then
-            gh api ${{ github.event.issue.pull_request.url }}/comments -f "body=@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\n```\ngit checkout master\ngit merge $branches # <-- error\n```"
+            print "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             exit 1
           fi
           set +e
@@ -40,7 +40,7 @@ jobs:
           set -e
           if [ -z "${merge_staging_candidate_branches}" ];
           then
-            gh api ${{ github.event.issue.pull_request.url }}/comments -f "body=@${{ github.event.issue.user.login }} unable to merge 'staging candidates' PRs\n```\ngit checkout master\ngit merge $branches\ngit merge $candidate_branches # <-- error\n```"
+            print "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches\\\ngit merge master $candidate_branches # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             exit 1
           fi
           set +e
@@ -48,7 +48,8 @@ jobs:
           set -e
           if [ -z "${merge_current_branch}" ];
           then
-            gh api ${{ github.event.issue.pull_request.url }}/comments -f "body=@${{ github.event.issue.user.login }} unable to merge the PR\n```\ngit checkout master\ngit merge $branches\ngit merge $candidate_branches\ngit merge $new_branch # <-- error\n```"
+            print "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge $branches\\\ngit merge $candidate_branches\\\ngit merge $new_branch # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            gh api ${{ github.event.issue.comments_url }} -f "body=@${{ github.event.issue.user.login }} unable to merge the PR\n```\ngit checkout master\ngit merge $branches\ngit merge $candidate_branches\ngit merge $new_branch # <-- error\n```"
             exit 1
           fi
 
