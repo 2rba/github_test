@@ -13,7 +13,7 @@ jobs:
       - run: |
 #          ref=`git rev-parse origin/staging_candidate`
           echo '---------------------------------------------------------------------'
-          echo "#${{ github.repository }}"
+          echo "#${{ toJson(github.repository) }}"
           echo "#${{ toJson(github.event.commit.tree.sha) }}"
           echo '---------------------------------------------------------------------'
           echo "#${{ toJson(github) }}"
