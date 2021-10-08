@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          set -x
           echo "#${{ toJson(github.event.commit) }}"
           echo '---------------------------------------------------------------------'
           echo "#${{ toJson(github) }}"
+          set -x
           prs=`gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@tsv'`
           if [ -z "${prs}" ];
           then
