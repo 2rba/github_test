@@ -15,7 +15,7 @@ jobs:
           echo $ref
           echo "#${{ toJson(github.event.commit.commit.tree.sha) }}"
           echo '---------------------------------------------------------------------'
-          echo ${{ toJson(github) }}
+          echo "###${{ toJson(github) }}"
           if [ "${{ github.event.commit.commit.tree.sha }}" != "$ref" ]; then
             echo "branch mismatch"
             exit 1
