@@ -14,11 +14,13 @@ jobs:
           ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
           echo $ref
           echo "#${{ toJson(github.event.commit.commit.tree.sha) }}"
+          echo '---------------------------------------------------------------------'
+          echo ${{ toJson(github) }}
           if [ "${{ github.event.commit.commit.tree.sha }}" != "$ref" ]; then
             echo "branch mismatch"
             exit 1
           fi
-          echo '---------------------------------------------------------------------'
+
           set -x
           prs=`gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@tsv'`
           if [ -z "${prs}" ];
