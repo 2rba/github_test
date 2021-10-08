@@ -13,7 +13,7 @@ jobs:
       - run: |
           ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
           echo $ref
-          echo "#${{ toJson(github.event.commit.commit.tree.sha) }}"
+          echo "#${{ toJson(github.event.sha) }}"
           echo '---------------------------------------------------------------------'
           echo "###${{ toJson(github) }}"
           if [ "${{ github.event.commit.commit.tree.sha }}" != "$ref" ]; then
