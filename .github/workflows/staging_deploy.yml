@@ -15,13 +15,13 @@ jobs:
           echo $ref
           echo "#${{ toJson(github.event.sha) }}"
           echo '---------------------------------------------------------------------'
+          set -x
           echo "###${{ toJson(github) }}"
-          if [ "${{ github.event.commit.commit.tree.sha }}" != "$ref" ]; then
+          if [ ${{ github.event.commit.commit.tree.sha }} != "$ref" ]; then
             echo "branch mismatch"
             exit 1
           fi
 
-          set -x
           prs=`gh api 'https://api.github.com/search/issues?q=repo:${{ github.repository }}+label:"staging+candidate"' -q '.items[]|[.url, .user.login]|@tsv'`
           if [ -z "${prs}" ];
           then
