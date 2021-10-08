@@ -49,7 +49,7 @@ jobs:
             exit 1
           fi
           set +e
-          git merge --no-edit -m "staging_candidate" origin/$new_branch
+          git merge --no-edit origin/$new_branch
           merge_current_branch=$?
           set -e
           if [ $merge_current_branch -ne 0 ];
@@ -60,6 +60,7 @@ jobs:
             exit 1
           fi
 
+          git commit -m "staging_candidate" --amend
           echo '{"labels":["staging candidate"]}' | gh api ${{ github.event.issue.url }}/labels --input -
           gh api ${{ github.event.comment.reactions.url }} -f 'content=rocket'
           git push -f --set-upstream origin staging_candidate
