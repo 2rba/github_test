@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          ref=`git rev-parse origin/staging_candidate`
+#          ref=`git rev-parse origin/staging_candidate`
           echo '---------------------------------------------------------------------'
-          echo $ref
+          echo "#${{ github.repository }}"
           echo "#${{ toJson(github.event.commit.tree.sha) }}"
           echo '---------------------------------------------------------------------'
           echo "#${{ toJson(github) }}"
