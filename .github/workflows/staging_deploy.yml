@@ -14,7 +14,7 @@ jobs:
           ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
           echo '---------------------------------------------------------------------'
           echo "#${{ toJson(github.repository) }}"
-          echo "#$ref"
+          echo $ref
           echo "#${{ toJson(github.event.commit.commit.tree.sha) }}"
           echo '---------------------------------------------------------------------'
           echo "#${{ toJson(github) }}"
