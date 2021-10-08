@@ -11,12 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
-          echo $ref
-          echo "#${{ github.event.sha }}"
-          echo '---------------------------------------------------------------------'
           set -x
-          echo "###${{ toJson(github) }}"
+          ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
           if [ "${{ github.event.sha }}" != "$ref" ]; then
             echo "branch mismatch"
             exit 1

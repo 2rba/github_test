@@ -38,7 +38,7 @@ jobs:
             exit 1
           fi
           set +e
-          git merge --no-edit master $candidate_branches
+          git merge --no-edit -m "staging_candidate" master $candidate_branches
           merge_staging_candidate_branches=$?
           set -e
           if [ $merge_staging_candidate_branches -ne 0 ];
