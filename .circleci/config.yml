@@ -38,4 +38,4 @@ workflows:
       - say-hello
       - say-hello2:
           requires:
-            - rspec
+            - say-hello
