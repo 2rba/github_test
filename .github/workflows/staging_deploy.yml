@@ -3,7 +3,7 @@ on:
   status
 jobs:
   deploy:
-    name: 'Staging deploy'
+    name: 'Staging deploy1'
     if: ${{ (github.event.commit.commit.message == 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
