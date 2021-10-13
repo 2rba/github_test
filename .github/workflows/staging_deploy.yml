@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
+          set +x
+          echo "${{ toJson(github) }}"
           set -x
           ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
           if [ "${{ github.event.sha }}" != "$ref" ]; then
