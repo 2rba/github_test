@@ -28,7 +28,7 @@ jobs:
            exit 0
           fi
 
-          if [ "${{github.event.state}}" == "success" ] && [ "${{github.event.context}}" == "coverage" ]; then
+          if [ "${{github.event.state}}" == "success" ] && [ "${{github.event.context}}" == "ci/circleci: coverage" ]; then
            echo "$prs" | while IFS=$'\t' read -r url login
             do
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
