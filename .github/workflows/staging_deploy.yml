@@ -7,6 +7,7 @@ jobs:
     if: ${{ (github.event.commit.commit.message == 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: |
           set +x
           echo "${{ toJson(github) }}"
@@ -27,8 +28,6 @@ jobs:
            exit 0
           fi
 
-      - uses: actions/checkout@v2
-      - run: |
           if [ "${{github.event.state}}" == "success" && "${{github.event.context}}" == "coverage" ]; then
            echo "$prs" | while IFS=$'\t' read -r url login
             do
