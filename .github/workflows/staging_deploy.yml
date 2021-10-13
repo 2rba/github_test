@@ -23,7 +23,9 @@ jobs:
           then
             exit 0
           fi
-          if [ "${{github.event.state}}" == "success" ]; then
+
+          combined_status=`gh api repos/${{ github.repository }}/commits/staging_candidate/status -q '.state'`
+          if [ "$combined_status" == "success" ]; then
            echo "$prs" | while IFS=$'\t' read -r url login
             do
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
