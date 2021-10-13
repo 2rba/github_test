@@ -4,7 +4,6 @@ on:
 jobs:
   deploy:
     name: 'Staging deploy'
-    if: ${{ contains(github.event.context, 'coverage') && (github.event.commit.commit.message == 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
