@@ -4,7 +4,7 @@ on:
 jobs:
   deploy:
     name: 'Staging deploy'
-    if: ${{ (github.event.commit.commit.message == 'staging_candidate') && (github.event.state == 'success' || github.event.state == 'failure') }}
+    if: ${{ contains(github.event.context, 'rspec') && (github.event.commit.commit.message == 'staging') && (github.event.state == 'success' || github.event.state == 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
             exit 0
           fi
 
-          ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging_candidate -q '.object.sha'`
+          ref=`gh api repos/${{ github.repository }}/git/refs/heads/staging1 -q '.object.sha'`
           if [ "${{ github.event.sha }}" != "$ref" ]; then
             echo "branch mismatch"
             exit 1
@@ -34,17 +34,12 @@ jobs:
            exit 0
           fi
 
-          if [ "${{github.event.state}}" == "success" ] && [ "${{github.event.context}}" == "ci/circleci: coverage" ]; then
+          if [ "${{github.event.state}}" == "success" ]; then
            echo "$prs" | while IFS=$'\t' read -r url login
             do
               echo '{"labels":["Staging"]}' | gh api $url/labels --input -
               gh api -X DELETE $url/labels/staging\ candidate
             done
-
-           git remote set-branches origin staging_candidate
-           git fetch
-           git checkout staging_candidate
-           git push -f origin origin/staging_candidate:staging1
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

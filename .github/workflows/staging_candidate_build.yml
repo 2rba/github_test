@@ -60,10 +60,10 @@ jobs:
             exit 1
           fi
 
-          git commit -m "staging_candidate" --amend
+          git commit -m "staging" --amend
           echo '{"labels":["staging candidate"]}' | gh api ${{ github.event.issue.url }}/labels --input -
           gh api ${{ github.event.comment.reactions.url }} -f 'content=rocket'
-          git push -f --set-upstream origin staging_candidate
+          git push -f --set-upstream origin staging1
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
