@@ -25,7 +25,7 @@ jobs:
           git fetch
           git config --global user.email "staging@indeedflex.com"
           git config --global user.name "Staging Candidate Action"
-          git checkout -b staging_candidate
+          git checkout -b staging1
           set +e
           git merge --no-edit master $branches
           merge_staging_branches=$?
