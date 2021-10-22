@@ -78,8 +78,8 @@ jobs:
                 do
                 while IFS=$'\t' read -r number2 login2
                 do
-                  login=`printf "$login1\n$login2" | uniq`
-                  error_message=`echo "$error_message \nPR #$number1 and PR #$number2 conflict with each other, please resolve or remove the \`Staging\` label. cc @$login"`
+                  login=`printf "@$login1\n@$login2" | uniq | tr '\n' ' '`
+                  error_message=`echo "$error_message \nPR #$number1 and PR #$number2 conflict with each other, please resolve or remove the \`Staging\` label. cc $login"`
                 done < <(echo "$details2")
                 done < <(echo "$details1")
               fi
