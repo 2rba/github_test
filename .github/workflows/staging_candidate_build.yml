@@ -55,7 +55,7 @@ jobs:
               details=`gh api "/repos/${{ github.repository }}/pulls?state=open&head=${{ github.repository_owner }}:$branch" -q '[.[0].number, .[0].user.login]|@tsv'`
                while IFS=$'\t' read -r number login
                do
-                 error_message=`echo "$error_message\nPR #$number cannot be merged with master, please rebase/merge or remove the \`Staging\` label. cc @$login"`
+                 error_message=`echo "$error_message\nPR #$number cannot be merged with master, please rebase/merge or remove the \\\`Staging\\\` label. cc @$login"`
                done < <(echo "$details")
             done
 
@@ -79,7 +79,7 @@ jobs:
                 while IFS=$'\t' read -r number2 login2
                 do
                   login=`printf "@$login1\n@$login2" | uniq | tr '\n' ' '`
-                  error_message=`echo "$error_message \nPR #$number1 and PR #$number2 conflict with each other, please resolve or remove the \`Staging\` label. cc $login"`
+                  error_message=`echo "$error_message \nPR #$number1 and PR #$number2 conflict with each other, please resolve or remove the \\\`Staging\\\` label. cc $login"`
                 done < <(echo "$details2")
                 done < <(echo "$details1")
               fi
