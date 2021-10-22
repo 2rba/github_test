@@ -52,7 +52,7 @@ jobs:
             done
             for branch in $master_unmergable_branches
             do
-              details=`gh api "/repos/2rba/github_test/pulls?state=open&head=2rba:$branch" -q '[.[0].number, .[0].user.login]|@tsv'`
+              details=`gh api "/repos/2rba/github_test/pulls?state=open&head=${{ github.repository_owner }}:$branch" -q '[.[0].number, .[0].user.login]|@tsv'`
                while IFS=$'\t' read -r number login
                do
                  printf -v error_message "$error_message\nPR #$number cannot be merged to master, please rebase/merge or unlabel the PR. cc @$login"
@@ -86,7 +86,7 @@ jobs:
             done
             done
 
-            printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # <-- error, Staging\\\n\`\`\`\\\\n$error_message"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'Staging' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # <-- error, Staging\\\n\`\`\`\\\n$error_message\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
             gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
             exit 1
