@@ -55,7 +55,7 @@ jobs:
               details=`gh api "/repos/2rba/github_test/pulls?state=open&head=${{ github.repository_owner }}:$branch" -q '[.[0].number, .[0].user.login]|@tsv'`
                while IFS=$'\t' read -r number login
                do
-                 printf -v error_message "$error_message\nPR #$number cannot be merged to master, please rebase/merge or unlabel the PR. cc @$login"
+                 printf -v error_message "$error_message\\\nPR #$number cannot be merged to master, please rebase/merge or unlabel the PR. cc @$login"
                done < <(echo "$details")
             done
 
@@ -79,7 +79,7 @@ jobs:
                 while IFS=$'\t' read -r number2 login2
                 do
                   login=`printf "$login1\n$login2" | uniq`
-                  error_message="$error_message \nPR #$number1 and PR #$number2 have conflicts, please resolve or unlabel. cc @$login"
+                  error_message="$error_message \\\nPR #$number1 and PR #$number2 have conflicts, please resolve or unlabel. cc @$login"
                 done < <(echo "$details2")
                 done < <(echo "$details1")
               fi
