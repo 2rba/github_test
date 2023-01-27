@@ -1,10 +1,10 @@
-name: 'Staging candidate build'
+name: 'Staging build'
 on:
   issue_comment:
     types: [ created ]
 jobs:
   build:
-    name: 'Staging candidate build'
+    name: 'Staging build'
     if: ${{ startsWith(github.event.comment.body, '/staging') }}
     runs-on: ubuntu-latest
     steps:
@@ -20,12 +20,21 @@ jobs:
             gh api ${{ github.event.issue.comments_url }} -f "body=@${{ github.event.issue.user.login }} Please make sure CI is greeen"
             exit 1
           fi
-          branches_list=`gh pr list -l staging | cut -d $'\t' -f 3`
-          branches=`echo "$branches_list" | sed "s/^/origin\//" | tr '\n' ' '`
-          candidate_branches=`gh pr list -l 'staging candidate' | cut -d $'\t' -f 3 | sed "s/^/origin\//" | tr '\n' ' '`
           git fetch
           git config --global user.email "staging@indeedflex.com"
-          git config --global user.name "Staging Candidate Action"
+          git config --global user.name "Staging Action"
+          branches=()
+          gh pr list -l staging --json headRefName -q '.[] | .headRefName' |
+            while read name; do
+            tag="staging/${name}"
+            echo git tag -l "${tag}"
+            exists=`git tag -l "${tag}"`
+            if [ "${tag}" != "${exists}" ]; then
+            git tag -f "${tag}" "origin/${name}"
+            git push origin "${tag}"
+            fi
+            branches+=("${tag}")
+            done  
           git checkout -b staging1
           set +e
           git merge --no-edit master $branches
@@ -93,30 +102,21 @@ jobs:
           fi
           
           set +e
-          git merge --no-edit master $candidate_branches
-          merge_staging_candidate_branches=$?
-          set -e
-          if [ $merge_staging_candidate_branches -ne 0 ];
-          then
-            printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge 'staging candidate' PRs\\\n\`\`\`\\\ngit checkout master\\\ngit merge master $branches # Staging\\\ngit merge master $candidate_branches # <-- error, staging candidates\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
-            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
-            gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
-            exit 1
-          fi
-          set +e
           git merge --no-edit origin/$new_branch
           merge_current_branch=$?
           set -e
           if [ $merge_current_branch -ne 0 ];
           then
-            printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge the PR\\\n\`\`\`\\\ngit checkout master\\\ngit merge $branches # Staging\\\ngit merge $candidate_branches # staging candidates\\\ngit merge $new_branch # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
+            printf "{\"body\": \"@${{ github.event.issue.user.login }} unable to merge the PR\\\n\`\`\`\\\ngit checkout master\\\ngit merge $branches # Staging\\\ngit merge $new_branch # <-- error\\\n\`\`\`\"}" | gh api ${{ github.event.issue.comments_url }} --input -
             gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/staging\ candidate || true
             gh api -X DELETE ${{ github.event.comment.issue_url }}/labels/Staging || true
             exit 1
           fi
-          
-          git commit -m "staging" --amend
-          echo '{"labels":["staging candidate"]}' | gh api ${{ github.event.issue.url }}/labels --input -
+            
+          git tag -f "staging/${new_branch}" "origin/${new_branch}"
+          git push origin "staging/${new_branch}"
+        
+          echo '{"labels":["Staging"]}' | gh api ${{ github.event.issue.url }}/labels --input -
           gh api ${{ github.event.comment.reactions.url }} -f 'content=rocket'
           git push -f --set-upstream origin staging1
 
